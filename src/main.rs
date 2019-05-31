@@ -151,49 +151,36 @@ impl EventHandler for Tetris {
 
 		clear(ctx, self.config.background_color);
 
+		let mut builder = MeshBuilder::new();
+
 		// Draw board
 		for (i, row) in self.grid.row_iter().enumerate() {
 			for (j, cell) in row.iter().enumerate() {
 
 				// Get position
-				let pos = self.to_wnd(Vec2::new(j as f32, i as f32));
+				let pos = self.pt_from_world_to_wnd(Vec2::new(j as f32, i as f32));
 				let sz = self.config.block_size;
 
 				// Get color
 				let color: Color;
 				let shape = Shape::from_index(cell);
-				if shape.is_some() {
-					color = shape.unwrap().color();
-				}
-				else if *cell == 8u8 {
-					color = Color::new(33.0 / 255.0, 33.0 / 255.0, 35.0 / 255.0, 1.0);
-				}
-				else {
-					color = Color::new(0.0, 0.0, 0.0, 0.0);
-				}
+				if shape.is_some() { color = shape.unwrap().color(); }
+				else if *cell == 8u8 { color = Color::new(33.0 / 255.0, 33.0 / 255.0, 35.0 / 255.0, 1.0); }
+				else { color = Color::new(0.0, 0.0, 0.0, 0.0); }
 
-				Mesh::new_circle(
-					ctx,
+				builder.circle(
 					DrawMode::fill(),
 					Point2::new(pos.x + sz / 2.0, pos.y + sz / 2.0),
 					2.0,
-					0.0001,
+					0.01,
 					Color::new(37.0 / 255.0, 37.0 / 255.0, 39.0 / 255.0, 0.6)
-				)
-					.unwrap()
-					.draw(ctx, DrawParam::default())
-					.expect("Could not draw :(");
+				);
 
-				// Draw cell
-				Mesh::new_rectangle(
-					ctx,
+				builder.rectangle(
 					DrawMode::fill(),
 					Rect::new(pos.x, pos.y, sz, sz),
 					color
-				)
-					.unwrap()
-					.draw(ctx, DrawParam::default())
-					.expect("Could not draw :(");
+				);
 			}
 		}
 
@@ -206,18 +193,22 @@ impl EventHandler for Tetris {
 		for (i, row) in shape.value().row_iter().enumerate() {
 			for (j, cell) in row.iter().enumerate() {
 
-				let pos = self.to_wnd(Vec2::new(position.x as f32 + j as f32, position.y as f32 + i as f32));
+				let pos = self.pt_from_world_to_wnd(Vec2::new(position.x as f32 + j as f32, position.y as f32 + i as f32));
 
 				// Draw cell
-				Mesh::new_rectangle(
-					ctx,
+				builder.rectangle(
 					DrawMode::fill(),
 					Rect::new(pos.x, pos.y, sz, sz),
 					if *cell != 0u8 { color } else { Color::new(0.0, 0.0, 0.0, 0.0) }
-				).unwrap().draw(ctx, DrawParam::default())
-					.expect("Could not draw :(");
+				);
 			}
 		}
+
+		let mesh: Mesh = builder.build(ctx)
+			.expect("Could not build the mesh");
+
+		mesh.draw(ctx, DrawParam::default())
+			.expect("Could not draw the mesh");
 
 		graphics::present(ctx)
 			.expect("Could not present the scene");
