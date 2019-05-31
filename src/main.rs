@@ -69,18 +69,19 @@ impl Tetris {
 
 		// Set collector with seed
 		let collector = PieceCollector::new(0);
-		let current_piece = (Vec2::new(1, 1), collector.get_next());
+		let current_piece = ([1, 1].into(), collector.get_next());
+
+		// Calculate values
+		let block_size = ctx.conf.window_mode.height / 20.0;
+		let x = ctx.conf.window_mode.width / 2.0 - block_size * 5.0;
+		let y = ctx.conf.window_mode.height / 2.0 - block_size * 10.0;
+		let w = ctx.conf.window_mode.width;
+		let h = ctx.conf.window_mode.height;
+		let background_color = (28.0 / 255.0, 28.0 / 255.0, 30.0 / 255.0, 1.0).into();
 
 		// Build state
 		Ok(Tetris {
-			config: TetrisDisplayConfig {
-				x: ctx.conf.window_mode.width / 2.0 - ctx.conf.window_mode.height / 20.0 * 5.0,
-				y: 0.0,
-				w: ctx.conf.window_mode.width,
-				h: ctx.conf.window_mode.height,
-				block_size: ctx.conf.window_mode.height / 20.0,
-				background_color: Color::new(28.0 / 255.0, 28.0 / 255.0, 30.0 / 255.0, 1.0)
-			},
+			config: TetrisDisplayConfig { x, y, w, h, block_size, background_color },
 			bot: None,
 			grid,
 			collector,
@@ -88,8 +89,24 @@ impl Tetris {
 		})
 	}
 
+	// Commands
+
 	fn down(&mut self) {
-		self.current_piece.0.y = ((self.current_piece.0.y - 1 + 1) % 17) + 1;
+
+		if self.can_down() {
+
+			self.current_piece.0.y += 1;
+
+		}
+		else {
+
+			// Place in the board
+			self.place_current_piece();
+
+			// Generate new piece
+			let new_shape = self.collector.get_next();
+			self.current_piece = ([1, 1].into(), new_shape);
+		}
 	}
 
 	fn right(&mut self) {
@@ -110,14 +127,14 @@ impl Tetris {
 		Vec2::new(x, y)
 	}
 
-	fn to_wnd(&self, point: Vec2) -> Vec2 {
+	fn pt_from_world_to_wnd(&self, point: Vec2) -> Vec2 {
 		let x = self.config.x + point.x * self.config.block_size;
 		let y = self.config.y + point.y * self.config.block_size;
 		Vec2::new(x, y)
 	}
 }
 
-impl event::EventHandler for Tetris {
+impl EventHandler for Tetris {
 
 	fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
 
@@ -219,7 +236,6 @@ impl event::EventHandler for Tetris {
 	}
 }
 
-
 fn main() {
 
 	let conf = Conf {
@@ -258,7 +274,9 @@ fn main() {
 		.expect("Could not create a game");
 
 	match event::run(ctx, event_loop, &mut tetris) {
-		Ok(_) => println!("Exited cleanly."),
+		Ok(_) => {
+			println!("Exited cleanly.");
+		},
 		Err(e) => println!("Dirty exit with error: {}", e)
 	}
 }
