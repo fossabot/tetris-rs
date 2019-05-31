@@ -8,6 +8,8 @@ It is a cross-platform Tetris environment with an _extremely_ simple AI that evo
 
 The progress of the project can be seen [here](https://github.com/MrRobb/tetris-rs/projects/1).
 
+![screenshot](.github/screenshot.png)
+
 ### Download
 
 I have barely started it so, **I will upload binaries once it is finished**.
