@@ -1,16 +1,24 @@
-language: rust
-
 sudo: true
+language: rust
 
 rust:
 - stable
 - beta
 - nightly
 
+os:
+  - linux
+  - osx
+#  - windows
+
 matrix:
   allow_failures:
-  - rust: nightly
-  fast_finish: true
+    - rust: nightly
+
+addons:
+  apt:
+    packages:
+      - libssl-dev
 
 cache: cargo
 
@@ -18,6 +26,10 @@ before_script:
 - cargo install cargo-update || echo "cargo-update already installed"
 - cargo install cargo-travis || echo "cargo-travis already installed"
 - cargo install-update -a
+- if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+    sudo apt-get -qq update
+    && sudo apt-get install -y libasound2-dev libudev-dev;
+  fi
 
 script:
-- cargo build --release --verbose --all
+- cargo build
