@@ -39,11 +39,11 @@ impl PieceCollector {
 	}
 
 	fn get_current(&self) -> Shape {
-		Shape::I
+		Shape::O
 	}
 
 	fn get_next(&self) -> Shape {
-		Shape::I
+		Shape::O
 	}
 
 }
@@ -89,8 +89,7 @@ impl Tetris {
 	}
 
 	fn down(&mut self) {
-		self.current_piece.0.y = (self.current_piece.0.y + 1) % 18;
-		dbg!(self.current_piece.0.y);
+		self.current_piece.0.y = ((self.current_piece.0.y - 1 + 1) % 17) + 1;
 	}
 
 	fn from_wnd(&self, point: Vec2) -> Vec2 {
@@ -110,7 +109,7 @@ impl event::EventHandler for Tetris {
 
 	fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
 
-		const FPS: u32 = 1;
+		const FPS: u32 = 2;
 
 		while timer::check_update_time(ctx, FPS) {
 			self.down();
@@ -138,12 +137,23 @@ impl event::EventHandler for Tetris {
 					color = shape.unwrap().color();
 				}
 				else if *cell == 8u8 {
-					let shade = pos.y / (ctx.conf.window_mode.height * 3.0) + 0.5;
-					color = Color::new(shade, shade, shade, 0.3);
+					color = Color::new(33.0 / 255.0, 33.0 / 255.0, 35.0 / 255.0, 1.0);
 				}
 				else {
 					color = Color::new(0.0, 0.0, 0.0, 0.0);
 				}
+
+				Mesh::new_circle(
+					ctx,
+					DrawMode::fill(),
+					Point2::new(pos.x + sz / 2.0, pos.y + sz / 2.0),
+					2.0,
+					0.0001,
+					Color::new(37.0 / 255.0, 37.0 / 255.0, 39.0 / 255.0, 0.6)
+				)
+					.unwrap()
+					.draw(ctx, DrawParam::default())
+					.expect("Could not draw :(");
 
 				// Draw cell
 				Mesh::new_rectangle(
@@ -179,14 +189,6 @@ impl event::EventHandler for Tetris {
 					.expect("Could not draw :(");
 			}
 		}
-
-
-		// let params = DrawParam::new()
-		// 	.dest(Point2::new(self.pos_x, 400.0));
-		//
-		// self.simple_circle
-		// 	.draw(ctx, params)
-		// 	.expect("Could not draw circle");
 
 		graphics::present(ctx)
 			.expect("Could not present the scene");
