@@ -1,6 +1,6 @@
 # Tetris-rs
 
-> This is in a **VERY** early stage. I am working in a refactoring of [this](https://github.com/MrRobb/Artificial-Intelligence/tree/master/Tetris%20AI) but made in [Rust](https://www.rust-lang.org) which is basically C++ but with steroids.
+> **This is in a VERY early stage.** Come back in a couple of weeks. I am working in a refactoring of [this](https://github.com/MrRobb/Artificial-Intelligence/tree/master/Tetris%20AI) but made in [Rust](https://www.rust-lang.org) which is basically C++ but with steroids.
 
 ### Description
 
