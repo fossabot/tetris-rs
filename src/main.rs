@@ -5,10 +5,10 @@ extern crate na;
 use ggez::*;
 use ggez::graphics::*;
 use ggez::conf::*;
+use ggez::event::*;
 use na::*;
 
 mod shape;
-
 use shape::*;
 
 struct TetrisDisplayConfig {
@@ -90,6 +90,18 @@ impl Tetris {
 
 	fn down(&mut self) {
 		self.current_piece.0.y = ((self.current_piece.0.y - 1 + 1) % 17) + 1;
+	}
+
+	fn right(&mut self) {
+		if self.current_piece.0.x < 7 {
+			self.current_piece.0.x += 1;
+		}
+	}
+
+	fn left(&mut self) {
+		if self.current_piece.0.x > 1 {
+			self.current_piece.0.x -= 1;
+		}
 	}
 
 	fn from_wnd(&self, point: Vec2) -> Vec2 {
@@ -194,6 +206,16 @@ impl event::EventHandler for Tetris {
 			.expect("Could not present the scene");
 
 		Ok(())
+	}
+
+	fn key_down_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods, _repeat: bool) {
+
+		match keycode {
+			KeyCode::Left => self.left(),
+			KeyCode::Right => self.right(),
+			KeyCode::Down => self.down(),
+			_ => ()
+		}
 	}
 }
 
