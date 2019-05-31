@@ -1,3 +1,21 @@
 language: rust
+
+rust:
+- stable
+- beta
+- nightly
+
+matrix:
+  allow_failures:
+  - rust: nightly
+  fast_finish: true
+
+cache: cargo
+
+before_script:
+- cargo install cargo-update || echo "cargo-update already installed"
+- cargo install cargo-travis || echo "cargo-travis already installed"
+- cargo install-update -a
+
 script:
-  - cargo build --verbose --all
+- cargo build --release --verbose --all
