@@ -240,3 +240,34 @@ fn main() {
 		Err(e) => println!("Dirty exit with error: {}", e)
 	}
 }
+
+#[cfg(test)]
+mod test {
+
+	use super::*;
+
+	#[test]
+	fn wnd_conversions() {
+
+		// Create simple
+		let (ctx, event_loop) = &mut ContextBuilder::new("Tetris", "Mr.Robb")
+			.build()
+			.expect(" ._. Could not create ggez context");
+
+		let mut tetris = Tetris::new(ctx)
+			.expect("Could not create a game");
+
+		let points: Vec<Vec2> = vec![
+			[0.0, 0.0].into(),
+			[1.0, 0.0].into(),
+			[0.0, 5.0].into(),
+			[19.0, 3.0].into(),
+			[-5.0, -7.0].into(),
+		];
+
+		let wnd_points: Vec<Vec2> = points.iter().map(|p| tetris.to_wnd(*p)).collect();
+		let transformed: Vec<Vec2> = wnd_points.iter().map(|p| tetris.from_wnd(*p)).collect();
+
+		assert_eq!(points, transformed);
+	}
+}
