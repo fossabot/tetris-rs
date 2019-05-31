@@ -12,6 +12,8 @@ The progress of the project can be seen [here](https://github.com/MrRobb/tetris-
 
 I have barely started it so, **I will upload binaries once it is finished**.
 
+### Build
+
 #### Install Rust
 
 On Linux and macOS systems, this is done as follows:
@@ -22,7 +24,7 @@ curl https://sh.rustup.rs -sSf | sh
 
 On Windows, download and run [rustup-init.exe](https://win.rustup.rs/). It will start the installation in a console and present the above message on success.
 
-### Build
+#### Build the project
 
 _You definitely do not want to this._ 
 
