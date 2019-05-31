@@ -121,7 +121,44 @@ impl Tetris {
 		}
 	}
 
-	fn from_wnd(&self, point: Vec2) -> Vec2 {
+	// Conditions
+
+	fn can_down(&self) -> bool {
+		let x = self.current_piece.0.x as usize;
+		let y = self.current_piece.0.y as usize;
+		for (i, row) in self.current_piece.1.value().row_iter().enumerate() {
+			for (j, cell) in row.iter().enumerate() {
+				if *cell != 0 && self.grid[(y + i + 1, x + j)] != 0 {
+					return false
+				}
+			}
+		}
+		true
+	}
+
+	fn can_left(&self) -> bool {
+		unimplemented!();
+	}
+
+	fn can_right(&self) -> bool {
+		unimplemented!();
+	}
+
+	// Behavior
+
+	fn place_current_piece(&mut self) {
+		let x = self.current_piece.0.x as usize;
+		let y = self.current_piece.0.y as usize;
+		for (i, row) in self.current_piece.1.value().row_iter().enumerate() {
+			for (j, cell) in row.iter().enumerate() {
+				self.grid[(y + i, x + j)] = *cell;
+			}
+		}
+	}
+
+	// Helpers
+
+	fn pt_from_wnd_to_world(&self, point: Vec2) -> Vec2 {
 		let x = (point.x - self.config.x) / self.config.block_size;
 		let y = (point.y - self.config.y) / self.config.block_size;
 		Vec2::new(x, y)
