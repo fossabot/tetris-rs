@@ -33,6 +33,56 @@ impl Shape {
 		}
 	}
 
+	pub fn x(&self) -> u8 {
+		for (i, col) in self.value().column_iter().enumerate() {
+			for cell in col.iter() {
+				if *cell > 0u8 {
+					return i as u8
+				}
+			}
+		}
+		0u8
+	}
+
+	pub fn y(&self) -> u8 {
+		for (i, row) in self.value().row_iter().enumerate() {
+			for cell in row.iter() {
+				if *cell > 0u8 {
+					return i as u8
+				}
+			}
+		}
+		0u8
+	}
+
+	pub fn w(&self) -> u8 {
+		let mut width = self.value().ncols() as u8;
+		for col in self.value().column_iter() {
+			let mut count = 0;
+			for cell in col.iter() {
+				count += if *cell != 0 { 1 } else { 0 };
+			}
+			if count == 0 {
+				width -= 1;
+			}
+		}
+		width
+	}
+
+	pub fn h(&self) -> u8 {
+		let mut height = self.value().ncols() as u8;
+		for row in self.value().row_iter() {
+			let mut count = 0;
+			for cell in row.iter() {
+				count += if *cell != 0 { 1 } else { 0 };
+			}
+			if count == 0 {
+				height -= 1;
+			}
+		}
+		height
+	}
+
 	pub fn rotate(shape: &mut DMatrix<u8>) {
 
 		let n = shape.nrows() - 1;
@@ -79,5 +129,37 @@ mod test {
 			Shape::rotate(&mut t);
 		}
 		assert_eq!(t, Shape::T.value());
+	}
+
+	#[test]
+	fn shape_x_test() {
+		assert_eq!(0, Shape::I.x());
+		assert_eq!(0, Shape::J.x());
+		assert_eq!(0, Shape::L.x());
+		assert_eq!(0, Shape::S.x());
+	}
+
+	#[test]
+	fn shape_y_test() {
+		assert_eq!(1, Shape::I.y());
+		assert_eq!(0, Shape::J.y());
+		assert_eq!(0, Shape::L.y());
+		assert_eq!(0, Shape::S.y());
+	}
+
+	#[test]
+	fn shape_w_test() {
+		assert_eq!(4, Shape::I.w());
+		assert_eq!(3, Shape::J.w());
+		assert_eq!(3, Shape::L.w());
+		assert_eq!(3, Shape::S.w());
+	}
+
+	#[test]
+	fn shape_h_test() {
+		assert_eq!(1, Shape::I.h());
+		assert_eq!(2, Shape::J.h());
+		assert_eq!(2, Shape::L.h());
+		assert_eq!(2, Shape::S.h());
 	}
 }
