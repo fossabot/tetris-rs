@@ -2,6 +2,7 @@
 
 [![HitCount](http://hits.dwyl.io/mrrobb/tetris-rs.svg)](http://hits.dwyl.io/mrrobb/tetris-rs)
 [![Build Status](https://travis-ci.org/MrRobb/tetris-rs.svg?branch=master)](https://travis-ci.org/MrRobb/tetris-rs)
+[![codecov](https://codecov.io/gh/MrRobb/tetris-rs/branch/master/graph/badge.svg)](https://codecov.io/gh/MrRobb/tetris-rs)
 [![GitHub Issues](https://img.shields.io/github/issues/mrrobb/tetris-rs.svg)](https://github.com/mrrobb/tetris-rs/issues)
 [![Github Stars](https://img.shields.io/github/stars/mrrobb/tetris-rs.svg?logo=github)](https://github.com/mrrobb/tetris-rs/stargazers)
 [![Twitter](https://img.shields.io/twitter/follow/rxbrtx.svg?label=rxbrtx&style=flat&logo=twitter&logoColor=4FADFF)](https://twitter.com/rxbrtx)
