@@ -168,6 +168,7 @@ impl TetrisGame {
 	// Behavior
 
 	fn place_current_piece(&mut self) {
+
 		let x = self.current_piece.0.x as usize;
 		let y = self.current_piece.0.y as usize;
 
@@ -176,7 +177,7 @@ impl TetrisGame {
 				if *cell != 0 {
 					self.grid[(y + i, x + j)] = *cell;
 					if y + i == 1 {
-
+						log::info!("Game over");
 					}
 				}
 			}
