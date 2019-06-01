@@ -1,10 +1,24 @@
 [package]
 name = "tetris-rs"
 version = "0.1.0"
-authors = ["Mr.Robb <roberto.ariosa@est.fib.upc.edu>"]
+authors = ["Mr.Robb <rob.ariosa@hotmail.com>"]
+description = "🕹️ Cross-platform Tetris environment made with Rust."
 edition = "2018"
 
 [dependencies]
 ggez = "0.5.0-rc.2"
 na = "0.18.1"
 rand = "0.6.5"
+
+[package.metadata.bundle]
+name = "Tetris"
+identifier = "com.mrrobb.tetris-rs"
+icon = [".assets/icon.png"]
+version = "0.1.0"
+resources = [".assets"]
+copyright = "Copyright (c) Roberto Ariosa 2019. All rights reserved."
+category = "Developer Tool"
+short_description = "Tetris Environment"
+long_description = """🕹️ Cross-platform Tetris environment made with Rust."""
+deb_depends = []
+osx_frameworks = []
