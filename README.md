@@ -3,6 +3,8 @@
 [![HitCount](http://hits.dwyl.io/mrrobb/tetris-rs.svg)](http://hits.dwyl.io/mrrobb/tetris-rs)
 [![Build Status](https://travis-ci.org/MrRobb/tetris-rs.svg?branch=master)](https://travis-ci.org/MrRobb/tetris-rs)
 [![GitHub Issues](https://img.shields.io/github/issues/mrrobb/tetris-rs.svg)](https://github.com/mrrobb/tetris-rs/issues)
+[![Github Stars](https://img.shields.io/github/stars/mrrobb/tetris-rs.svg?logo=github)](https://github.com/mrrobb/tetris-rs/stargazers)
+[![Twitter](https://img.shields.io/twitter/follow/rxbrtx.svg?label=rxbrtx&style=flat&logo=twitter&logoColor=4FADFF)](https://twitter.com/rxbrtx)
 
 > **This is in a VERY early stage.** Come back in a couple of weeks. I am working in a refactoring of [this](https://github.com/MrRobb/Artificial-Intelligence/tree/master/Tetris%20AI) but made in [Rust](https://www.rust-lang.org) which is basically C++ but with steroids.
 
@@ -35,8 +37,8 @@ On Windows, download and run [rustup-init.exe](https://win.rustup.rs/). It will 
 _You definitely do not want to this._ 
 
 ```sh
-cargo build                 # debug
-cargo build --release       # release
+cargo build				# debug
+cargo build --release	# release
 ```
 
 ### Usage
@@ -44,6 +46,6 @@ cargo build --release       # release
 _You definitely do not want to this._
 
 ```sh
-cargo run                   # debug
-cargo run --release         # release
+cargo run				# debug
+cargo run --release		# release
 ```
