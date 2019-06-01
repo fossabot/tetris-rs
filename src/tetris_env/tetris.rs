@@ -46,7 +46,7 @@ impl PieceCollector {
 	fn get_next(&self) -> Shape {
 		let mut rng = rand::thread_rng();
 		let index = rng.gen_range(1u8, 8u8);
-		Shape::from_index(&index).unwrap()
+		Shape::from_index(index).unwrap()
 	}
 
 }
@@ -206,10 +206,9 @@ impl TetrisGame {
 				leg::done(format!("Score: {}", self.score).as_str(), None, None);
 				self.score += 50;
 
-				for ii in (2usize..i + 1).rev() {
+				for ii in (2usize..=i).rev() {
 					self.grid.swap_rows(ii, ii - 1);
 				}
-				let r = self.grid.row(1);
 				self.grid.fill_row(1, 0);
 				self.grid[(1, 0)] = 8u8;
 				self.grid[(1, 9)] = 8u8;
@@ -265,7 +264,7 @@ impl EventHandler for TetrisGame {
 
 				// Get color
 				let color: Color;
-				let shape = Shape::from_index(cell);
+				let shape = Shape::from_index(*cell);
 				if shape.is_some() { color = shape.unwrap().color(); }
 				else if *cell == 8u8 { color = Color::new(33.0 / 255.0, 33.0 / 255.0, 35.0 / 255.0, 1.0); }
 				else { color = Color::new(0.0, 0.0, 0.0, 0.0); }
@@ -318,7 +317,7 @@ impl EventHandler for TetrisGame {
 		Ok(())
 	}
 
-	fn key_down_event(&mut self, ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods, _repeat: bool) {
+	fn key_down_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods, _repeat: bool) {
 
 		match keycode {
 			KeyCode::Left => self.left(),

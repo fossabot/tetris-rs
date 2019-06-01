@@ -4,14 +4,10 @@ extern crate na;
 extern crate rand;
 
 use ggez::*;
-use ggez::graphics::*;
 use ggez::conf::*;
-use ggez::event::*;
-use na::*;
 
-mod tetris;
-use tetris::shape::*;
-use tetris::tetris::*;
+mod tetris_env;
+use tetris_env::tetris::*;
 
 fn main() {
 
