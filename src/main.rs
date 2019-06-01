@@ -15,28 +15,21 @@ use tetris::tetris::*;
 
 fn main() {
 
+	let window_mode = WindowMode::default()
+		.dimensions(1600.0, 1200.0)
+		.hidpi(true)
+		.resizable(true);
+
+	let window_setup = WindowSetup::default()
+		.title("Tetris")
+		.icon("")
+		.vsync(true)
+		.transparent(false)
+		.samples(NumSamples::Zero);
+
 	let conf = Conf {
-		window_mode: WindowMode {
-			width: 1600.0,
-			height: 1200.0,
-			borderless: false,
-			fullscreen_type: FullscreenType::Windowed,
-			min_width: 0.0,
-			max_width: 0.0,
-			min_height: 0.0,
-			max_height: 0.0,
-			hidpi: false,
-			maximized: false,
-			resizable: true
-		},
-		window_setup: WindowSetup {
-			title: "Tetris".to_owned(),
-			icon: "".to_owned(),
-			samples: NumSamples::Eight,
-			vsync: true,
-			transparent: false,
-			srgb: true
-		},
+		window_mode,
+		window_setup,
 		backend: Backend::default(),
 		modules: ModuleConf::default()
 	};
