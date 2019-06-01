@@ -88,7 +88,7 @@ impl TetrisGame {
 			bot: None,
 			grid,
 			collector,
-			current_piece,
+			current_piece
 		})
 	}
 

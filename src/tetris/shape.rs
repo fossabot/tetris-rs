@@ -115,8 +115,6 @@ impl Shape {
 	}
 }
 
-
-
 #[cfg(test)]
 mod test {
 
