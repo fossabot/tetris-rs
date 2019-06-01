@@ -37,8 +37,8 @@ On Windows, download and run [rustup-init.exe](https://win.rustup.rs/). It will 
 _You definitely do not want to this._ 
 
 ```sh
-cargo build				# debug
-cargo build --release	# release
+cargo build             # debug
+cargo build --release   # release
 ```
 
 ### Usage
@@ -46,6 +46,6 @@ cargo build --release	# release
 _You definitely do not want to this._
 
 ```sh
-cargo run				# debug
-cargo run --release		# release
+cargo run               # debug
+cargo run --release     # release
 ```
