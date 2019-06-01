@@ -58,6 +58,8 @@ pub struct TetrisGame {
 	grid: MatrixMN<u8, U20, U10>,
 	collector: PieceCollector,
 	current_piece: (Vec2<usize>, Shape),
+	score: u64,
+	game_over: bool
 }
 
 impl TetrisGame {
@@ -89,7 +91,9 @@ impl TetrisGame {
 			bot: None,
 			grid,
 			collector,
-			current_piece
+			current_piece,
+			score: 0,
+			game_over: false
 		})
 	}
 
@@ -179,6 +183,7 @@ impl TetrisGame {
 					self.grid[(y + i, x + j)] = *cell;
 					if y + i == 1 {
 						leg::error("Game over", None, None);
+						self.game_over = true;
 					}
 				}
 			}
@@ -197,7 +202,11 @@ impl TetrisGame {
 				}
 			}
 			if complete {
+
 				leg::info("Line completed", None, None);
+				leg::done(format!("Score: {}", self.score).as_str(), None, None);
+				self.score += 50;
+
 				for ii in (2usize..i + 1).rev() {
 					self.grid.swap_rows(ii, ii - 1);
 				}
@@ -232,6 +241,10 @@ impl EventHandler for TetrisGame {
 
 		while timer::check_update_time(ctx, FPS) {
 			self.down();
+		}
+
+		if self.game_over {
+
 		}
 
 		Ok(())
