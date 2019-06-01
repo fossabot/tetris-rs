@@ -2,6 +2,7 @@
 extern crate ggez;
 extern crate na;
 extern crate rand;
+extern crate leg;
 
 use ggez::*;
 use ggez::graphics::*;
@@ -177,9 +178,33 @@ impl TetrisGame {
 				if *cell != 0 {
 					self.grid[(y + i, x + j)] = *cell;
 					if y + i == 1 {
-						log::info!("Game over");
+						leg::error("Game over", None, None);
 					}
 				}
+			}
+		}
+
+		self.remove_full_lines();
+	}
+
+	fn remove_full_lines(&mut self) {
+
+		for i in 1..self.grid.nrows() - 1 {
+			let mut complete = true;
+			for cell in self.grid.row(i).iter() {
+				if *cell == 0 {
+					complete = false;
+				}
+			}
+			if complete {
+				leg::info("Line completed", None, None);
+				for ii in (2usize..i + 1).rev() {
+					self.grid.swap_rows(ii, ii - 1);
+				}
+				let r = self.grid.row(1);
+				self.grid.fill_row(1, 0);
+				self.grid[(1, 0)] = 8u8;
+				self.grid[(1, 9)] = 8u8;
 			}
 		}
 	}
