@@ -22,7 +22,7 @@ impl Shape {
 	}
 
 	pub fn color(&self) -> Color {
-		return match *self {
+		match *self {
 			Shape::I => Color::from_rgb(249, 35, 56),
 			Shape::J => Color::from_rgb(201, 115, 255),
 			Shape::L => Color::from_rgb(28, 118, 188),

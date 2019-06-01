@@ -6,7 +6,6 @@ extern crate leg;
 
 use ggez::*;
 use ggez::graphics::*;
-use ggez::conf::*;
 use ggez::event::*;
 use na::*;
 use rand::*;
