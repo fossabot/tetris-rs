@@ -11,6 +11,8 @@ use na::*;
 use rand::*;
 
 use super::shape::*;
+use super::menu::*;
+use super::world::*;
 
 struct TetrisDisplayConfig {
 	x: f32,
@@ -40,7 +42,7 @@ impl PieceCollector {
 	}
 
 	fn get_current(&self) -> Shape {
-		Shape::O
+		Shape::O(0)
 	}
 
 	fn get_next(&self) -> Shape {
@@ -51,19 +53,20 @@ impl PieceCollector {
 
 }
 
-pub struct TetrisGame {
+pub struct TetrisScene {
+	pub world: World,
 	config: TetrisDisplayConfig,
 	bot: Option<TetrisBot>,
 	grid: MatrixMN<u8, U20, U10>,
 	collector: PieceCollector,
-	current_piece: (Vec2<usize>, Shape),
+	current_piece: (Vec2<i32>, Shape),
 	score: u64,
 	game_over: bool
 }
 
-impl TetrisGame {
+impl TetrisScene {
 
-	pub fn new(ctx: &mut Context) -> GameResult<TetrisGame> {
+	pub fn new(world: World) -> Self {
 
 		// Initialize grid
 		let mut grid: MatrixMN<u8, U20, U10> = zero();
@@ -77,15 +80,16 @@ impl TetrisGame {
 		let current_piece = ([1, 1].into(), collector.get_next());
 
 		// Calculate values
-		let block_size = ctx.conf.window_mode.height / 20.0;
-		let x = ctx.conf.window_mode.width / 2.0 - block_size * 5.0;
-		let y = ctx.conf.window_mode.height / 2.0 - block_size * 10.0;
-		let w = ctx.conf.window_mode.width;
-		let h = ctx.conf.window_mode.height;
+		let block_size = world.config.window_mode.height / 20.0;
+		let x = world.config.window_mode.width / 2.0 - block_size * 5.0;
+		let y = world.config.window_mode.height / 2.0 - block_size * 10.0;
+		let w = world.config.window_mode.width;
+		let h = world.config.window_mode.height;
 		let background_color = (28.0 / 255.0, 28.0 / 255.0, 30.0 / 255.0, 1.0).into();
 
 		// Build state
-		Ok(TetrisGame {
+		TetrisScene {
+			world,
 			config: TetrisDisplayConfig { x, y, w, h, block_size, background_color },
 			bot: None,
 			grid,
@@ -93,7 +97,7 @@ impl TetrisGame {
 			current_piece,
 			score: 0,
 			game_over: false
-		})
+		}
 	}
 
 	// Commands
@@ -128,14 +132,36 @@ impl TetrisGame {
 		}
 	}
 
+	fn rotate(&mut self) {
+		if self.can_rotate() {
+			self.current_piece.1 = self.current_piece.1.rotate_clockwise();
+			let mut i = 0;
+			while i < 4 && self.overlapping(0, &self.current_piece) {
+				if !self.overlapping(-1, &self.current_piece) {
+					self.current_piece.0.x -= 1;
+				}
+				else if !self.overlapping(1, &self.current_piece) {
+					self.current_piece.0.x += 1;
+				}
+				else if (self.current_piece.1 == Shape::I(0) || self.current_piece.1 == Shape::I(2)) && !self.overlapping(-2, &self.current_piece) {
+					self.current_piece.0.x -= 2;
+				}
+				else if (self.current_piece.1 == Shape::I(0) || self.current_piece.1 == Shape::I(2)) && !self.overlapping(2, &self.current_piece) {
+					self.current_piece.0.x += 2;
+				}
+				i += 1;
+			}
+		}
+	}
+
 	// Conditions
 
 	fn can_down(&self) -> bool {
-		let x = self.current_piece.0.x as usize;
-		let y = self.current_piece.0.y as usize;
+		let x = self.current_piece.0.x as i32;
+		let y = self.current_piece.0.y as i32;
 		for (i, row) in self.current_piece.1.value().row_iter().enumerate() {
 			for (j, cell) in row.iter().enumerate() {
-				if *cell != 0 && self.grid[(y + i + 1, x + j)] != 0 {
+				if *cell != 0 && self.grid[((y + i as i32 + 1) as usize, (x + j as i32) as usize)] != 0 {
 					return false
 				}
 			}
@@ -144,27 +170,33 @@ impl TetrisGame {
 	}
 
 	fn can_left(&self) -> bool {
-		let x = self.current_piece.0.x as usize;
-		let y = self.current_piece.0.y as usize;
-		for (i, row) in self.current_piece.1.value().row_iter().enumerate() {
-			for (j, cell) in row.iter().enumerate() {
-				if *cell != 0 && self.grid[(y + i, x + j - 1)] != 0 {
-					return false
-				}
-			}
-		}
-		true
+		!self.overlapping(-1, &self.current_piece)
 	}
 
 	fn can_right(&self) -> bool {
-		let x = self.current_piece.0.x as usize;
-		let y = self.current_piece.0.y as usize;
-		for (i, row) in self.current_piece.1.value().row_iter().enumerate() {
-			for (j, cell) in row.iter().enumerate() {
-				if *cell != 0 && self.grid[(y + i, x + j + 1)] != 0 {
-					return false
-				}
+		!self.overlapping(1, &self.current_piece)
+	}
+
+	fn can_rotate(&self) -> bool {
+		let mut rotated = (self.current_piece.0, self.current_piece.1.rotate_clockwise());
+		let mut i = 0;
+		while i < 4 && self.overlapping(0, &rotated) {
+			if !self.overlapping(-1, &rotated) {
+				rotated.0.x -= 1;
 			}
+			else if !self.overlapping(1, &rotated) {
+				rotated.0.x += 1;
+			}
+			else if (rotated.1 == Shape::I(0) || rotated.1 == Shape::I(2)) && !self.overlapping(-2, &rotated) {
+				rotated.0.x -= 2;
+			}
+			else if (rotated.1 == Shape::I(0) || rotated.1 == Shape::I(2)) && !self.overlapping(2, &rotated) {
+				rotated.0.x += 2;
+			}
+			else {
+				return false
+			}
+			i += 1;
 		}
 		true
 	}
@@ -173,15 +205,17 @@ impl TetrisGame {
 
 	fn place_current_piece(&mut self) {
 
-		let x = self.current_piece.0.x as usize;
-		let y = self.current_piece.0.y as usize;
+		let x = self.current_piece.0.x as i32;
+		let y = self.current_piece.0.y as i32;
 
 		for (i, row) in self.current_piece.1.value().row_iter().enumerate() {
 			for (j, cell) in row.iter().enumerate() {
 				if *cell != 0 {
-					self.grid[(y + i, x + j)] = *cell;
-					if y + i == 1 {
-						leg::error("Game over", None, None);
+					let ii = y + i as i32;
+					let jj = x + j as i32;
+					self.grid[(ii as usize, jj as usize)] = *cell;
+					if ii == 1 {
+						leg::wait("Game over", None, None);
 						self.game_over = true;
 					}
 				}
@@ -202,9 +236,9 @@ impl TetrisGame {
 			}
 			if complete {
 
-				leg::info("Line completed", None, None);
-				leg::done(format!("Score: {}", self.score).as_str(), None, None);
 				self.score += 50;
+				leg::success("Line completed", "🍻".into(), None);
+				leg::success(format!("Score: {}", self.score).as_str(), "🎉".into(), None);
 
 				for ii in (2usize..=i).rev() {
 					self.grid.swap_rows(ii, ii - 1);
@@ -216,7 +250,34 @@ impl TetrisGame {
 		}
 	}
 
+	pub fn run(&mut self) {
+
+		let (ctx, event_loop) = &mut ContextBuilder::new("Tetris", "Mr.Robb")
+			.conf(self.world.config.clone())
+			.with_conf_file(true)
+			.build()
+			.expect(" ._. Could not create ggez context");
+
+		event::run(ctx, event_loop, self)
+			.expect("Dirty exit.");
+	}
+
 	// Helpers
+
+	fn overlapping(&self, offset_x: i8, piece: &(Vec2<i32>, Shape)) -> bool {
+		let x = piece.0.x as i8;
+		let y = piece.0.y as i8;
+		for i in 0..piece.1.value().nrows() {
+			for j in 0..piece.1.value().ncols() {
+				let ii = y + i as i8;
+				let jj = x + j as i8 + offset_x;
+				if piece.1.value()[(i, j)] != 0 && (jj < 0 || jj >= 9 || self.grid[(ii as usize, jj as usize)] != 0) {
+					return true
+				}
+			}
+		}
+		false
+	}
 
 	fn pt_from_wnd_to_world(&self, point: Vec2) -> Vec2 {
 		let x = (point.x - self.config.x) / self.config.block_size;
@@ -231,17 +292,15 @@ impl TetrisGame {
 	}
 }
 
-impl EventHandler for TetrisGame {
+impl EventHandler for TetrisScene {
 
 	fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
 
 		const FPS: u32 = 2;
 
 		while timer::check_update_time(ctx, FPS) {
-			self.down();
-		}
 
-		if self.game_over {
+			self.down();
 
 		}
 
@@ -251,6 +310,11 @@ impl EventHandler for TetrisGame {
 	fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
 
 		clear(ctx, self.config.background_color);
+
+		// Check if you lost <3
+		if self.game_over {
+			quit(ctx);
+		}
 
 		let mut builder = MeshBuilder::new();
 
@@ -323,38 +387,14 @@ impl EventHandler for TetrisGame {
 			KeyCode::Left => self.left(),
 			KeyCode::Right => self.right(),
 			KeyCode::Down => self.down(),
+			KeyCode::Up => self.rotate(),
 			_ => ()
 		}
 	}
 }
 
-#[cfg(test)]
-mod test {
-
-	use super::*;
-
-	#[test]
-	fn wnd_conversions() {
-
-		// Create simple
-		let (ctx, event_loop) = &mut ContextBuilder::new("Tetris", "Mr.Robb")
-			.build()
-			.expect(" ._. Could not create ggez context");
-
-		let mut tetris = TetrisGame::new(ctx)
-			.expect("Could not create a game");
-
-		let points: Vec<Vec2> = vec![
-			[0.0, 0.0].into(),
-			[1.0, 0.0].into(),
-			[0.0, 5.0].into(),
-			[19.0, 3.0].into(),
-			[-5.0, -7.0].into(),
-		];
-
-		let wnd_points: Vec<Vec2> = points.iter().map(|p| tetris.pt_from_world_to_wnd(*p)).collect();
-		let transformed: Vec<Vec2> = wnd_points.iter().map(|p| tetris.pt_from_wnd_to_world(*p)).collect();
-
-		assert_eq!(points, transformed);
+impl From<MenuScene> for TetrisScene {
+	fn from(value: MenuScene) -> TetrisScene {
+		TetrisScene::new(value.world)
 	}
 }

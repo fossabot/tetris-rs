@@ -1,43 +1,71 @@
 
-mod tetris_env;
+use ggez::conf::*;
 
-use ggez::Context;
-use tetris_env::world::World;
-use tetris_env::menu::MenuScene;
-use tetris_env::tetris::TetrisScene;
-use std::time::Duration;
+use super::world::*;
+use super::menu::*;
+use super::tetris::*;
+use super::gameover::*;
+
+// Scene
 
 pub struct Scene<S> {
-	world: World,
 	scene: S
 }
 
 impl Scene<MenuScene> {
-	pub fn new(ctx: Context) -> Self {
+	pub fn new(config: Conf) -> Self {
+
+		let world = World {
+			config
+		};
+
 		Scene {
-			world: World {},
-			scene: MenuScene::new(ctx)
+			scene: MenuScene::new(world)
 		}
 	}
+}
 
-	pub fn run(mut self) {
-		leg::info("Running...", None, None);
-		Scene::<TetrisScene>::from(self);
-		leg::info("Initiating Tetris", None, None);
+
+// Scene .run()
+
+impl Scene<MenuScene> {
+	pub fn run(self) -> Scene<TetrisScene> {
+		leg::success("Opening menu...", None, None);
+		const VERSION: &str = env!("CARGO_PKG_VERSION");
+		leg::head("Tetris", Some("🕹️"), Some(VERSION));
+		self.into()
 	}
 }
 
 impl Scene<TetrisScene> {
-	pub fn run(&self) {
-		leg::info("Running Tetris", None, None);
-		std::thread::sleep(Duration::from_secs(20));
+	pub fn run(mut self) -> Scene<GameOverScene> {
+		leg::success("Running Tetris...", None, None);
+		self.scene.run();
+		self.into()
 	}
 }
+
+impl Scene<GameOverScene> {
+	pub fn run(self) -> Scene<GameOverScene> {
+		leg::success("Game over scene", None, None);
+		self
+	}
+}
+
+
+// Scene .into()
 
 impl From<Scene<MenuScene>> for Scene<TetrisScene> {
 	fn from(value: Scene<MenuScene>) -> Scene<TetrisScene> {
 		Scene {
-			world: value.world,
+			scene: value.scene.into()
+		}
+	}
+}
+
+impl From<Scene<TetrisScene>> for Scene<GameOverScene> {
+	fn from(value: Scene<TetrisScene>) -> Scene<GameOverScene> {
+		Scene {
 			scene: value.scene.into()
 		}
 	}

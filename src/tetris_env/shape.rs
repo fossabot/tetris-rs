@@ -5,31 +5,63 @@ extern crate na;
 use ggez::graphics::*;
 use na::*;
 
-pub enum Shape { I, J, L, O, S, T, Z }
+#[derive(PartialEq)]
+pub enum Shape { I(u8), J(u8), L(u8), O(u8), S(u8), T(u8), Z(u8) }
 
 impl Shape {
 
 	pub fn value(&self) -> DMatrix<u8> {
 		match *self {
-			Shape::I => DMatrix::from_row_slice(4, 4, &[ 0,0,0,0, 1,1,1,1, 0,0,0,0, 0,0,0,0 ]),
-			Shape::J => DMatrix::from_row_slice(3, 3, &[ 2,0,0,   2,2,2,   0,0,0            ]),
-			Shape::L => DMatrix::from_row_slice(3, 3, &[ 0,0,3,   3,3,3,   0,0,0            ]),
-			Shape::O => DMatrix::from_row_slice(2, 2, &[ 4,4,     4,4                       ]),
-			Shape::S => DMatrix::from_row_slice(3, 3, &[ 0,5,5,   5,5,0,   0,0,0            ]),
-			Shape::T => DMatrix::from_row_slice(3, 3, &[ 0,6,0,   6,6,6,   0,0,0            ]),
-			Shape::Z => DMatrix::from_row_slice(3, 3, &[ 7,7,0,   0,7,7,   0,0,0            ])
+			Shape::I(0) => DMatrix::from_row_slice(4, 4, &[ 0,0,0,0, 1,1,1,1, 0,0,0,0, 0,0,0,0 ]),
+			Shape::I(1) => DMatrix::from_row_slice(4, 4, &[ 0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0 ]),
+			Shape::I(2) => DMatrix::from_row_slice(4, 4, &[ 0,0,0,0, 0,0,0,0, 1,1,1,1, 0,0,0,0 ]),
+			Shape::I(3) => DMatrix::from_row_slice(4, 4, &[ 0,1,0,0, 0,1,0,0, 0,1,0,0, 0,1,0,0 ]),
+			Shape::J(0) => DMatrix::from_row_slice(3, 3, &[ 2,0,0,   2,2,2,   0,0,0            ]),
+			Shape::J(1) => DMatrix::from_row_slice(3, 3, &[ 0,2,2,   0,2,0,   0,2,0            ]),
+			Shape::J(2) => DMatrix::from_row_slice(3, 3, &[ 0,0,0,   2,2,2,   0,0,2            ]),
+			Shape::J(3) => DMatrix::from_row_slice(3, 3, &[ 0,2,0,   0,2,0,   2,2,0            ]),
+			Shape::L(0) => DMatrix::from_row_slice(3, 3, &[ 0,0,3,   3,3,3,   0,0,0            ]),
+			Shape::L(1) => DMatrix::from_row_slice(3, 3, &[ 0,3,0,   0,3,0,   0,3,3            ]),
+			Shape::L(2) => DMatrix::from_row_slice(3, 3, &[ 0,0,0,   3,3,3,   3,0,0            ]),
+			Shape::L(3) => DMatrix::from_row_slice(3, 3, &[ 3,3,0,   0,3,0,   0,3,0            ]),
+			Shape::O(_) => DMatrix::from_row_slice(2, 2, &[ 4,4,     4,4                       ]),
+			Shape::S(0) => DMatrix::from_row_slice(3, 3, &[ 0,5,5,   5,5,0,   0,0,0            ]),
+			Shape::S(1) => DMatrix::from_row_slice(3, 3, &[ 0,5,0,   0,5,5,   0,0,5            ]),
+			Shape::S(2) => DMatrix::from_row_slice(3, 3, &[ 0,0,0,   0,5,5,   5,5,0            ]),
+			Shape::S(3) => DMatrix::from_row_slice(3, 3, &[ 5,0,0,   5,5,0,   0,5,0            ]),
+			Shape::T(0) => DMatrix::from_row_slice(3, 3, &[ 0,6,0,   6,6,6,   0,0,0            ]),
+			Shape::T(1) => DMatrix::from_row_slice(3, 3, &[ 0,6,0,   0,6,6,   0,6,0            ]),
+			Shape::T(2) => DMatrix::from_row_slice(3, 3, &[ 0,0,0,   6,6,6,   0,6,0            ]),
+			Shape::T(3) => DMatrix::from_row_slice(3, 3, &[ 0,6,0,   6,6,0,   0,6,0            ]),
+			Shape::Z(0) => DMatrix::from_row_slice(3, 3, &[ 7,7,0,   0,7,7,   0,0,0            ]),
+			Shape::Z(1) => DMatrix::from_row_slice(3, 3, &[ 0,0,7,   0,7,7,   0,7,0            ]),
+			Shape::Z(2) => DMatrix::from_row_slice(3, 3, &[ 0,0,0,   7,7,0,   0,7,7            ]),
+			Shape::Z(3) => DMatrix::from_row_slice(3, 3, &[ 0,7,0,   7,7,0,   7,0,0            ]),
+			_ => unreachable!()
 		}
 	}
 
 	pub fn color(&self) -> Color {
 		match *self {
-			Shape::I => Color::from_rgb(249, 35, 56),
-			Shape::J => Color::from_rgb(201, 115, 255),
-			Shape::L => Color::from_rgb(28, 118, 188),
-			Shape::O => Color::from_rgb(254, 227, 86),
-			Shape::S => Color::from_rgb(83, 213, 4),
-			Shape::T => Color::from_rgb(54, 224, 255),
-			Shape::Z => Color::from_rgb(248, 147, 29)
+			Shape::I(_) => Color::from_rgb(249, 35, 56),
+			Shape::J(_) => Color::from_rgb(201, 115, 255),
+			Shape::L(_) => Color::from_rgb(28, 118, 188),
+			Shape::O(_) => Color::from_rgb(254, 227, 86),
+			Shape::S(_) => Color::from_rgb(83, 213, 4),
+			Shape::T(_) => Color::from_rgb(54, 224, 255),
+			Shape::Z(_) => Color::from_rgb(248, 147, 29),
+		}
+	}
+
+	pub fn rotate_clockwise(&self) -> Shape {
+		match *self {
+			Shape::I(i) => Shape::I((i + 1) % 4),
+			Shape::J(i) => Shape::J((i + 1) % 4),
+			Shape::L(i) => Shape::L((i + 1) % 4),
+			Shape::O(i) => Shape::O((i + 1) % 4),
+			Shape::S(i) => Shape::S((i + 1) % 4),
+			Shape::T(i) => Shape::T((i + 1) % 4),
+			Shape::Z(i) => Shape::Z((i + 1) % 4),
 		}
 	}
 
@@ -83,33 +115,15 @@ impl Shape {
 		height
 	}
 
-	pub fn rotate(shape: &mut DMatrix<u8>) {
-
-		let n = shape.nrows() - 1;
-
-		for i in 0..=(n / 2) {
-			for j in i..(n - i) {
-				let item1 = *shape.index((i, j));
-				let item2 = *shape.index((j, n - i));
-				let item3 = *shape.index((n - i, n - j));
-				let item4 = *shape.index((n - j, i));
-				*shape.index_mut((j, n - i)) = item1;
-				*shape.index_mut((n - i, n - j)) = item2;
-				*shape.index_mut((n - j, i)) = item3;
-				*shape.index_mut((i, j)) = item4;
-			}
-		}
-	}
-
 	pub fn from_index(index: u8) -> Option<Shape> {
 		match index {
-			1 => Some(Shape::I),
-			2 => Some(Shape::J),
-			3 => Some(Shape::L),
-			4 => Some(Shape::O),
-			5 => Some(Shape::S),
-			6 => Some(Shape::T),
-			7 => Some(Shape::Z),
+			1 => Some(Shape::I(0)),
+			2 => Some(Shape::J(0)),
+			3 => Some(Shape::L(0)),
+			4 => Some(Shape::O(0)),
+			5 => Some(Shape::S(0)),
+			6 => Some(Shape::T(0)),
+			7 => Some(Shape::Z(0)),
 			_ => None
 		}
 	}
@@ -121,43 +135,34 @@ mod test {
 	use super::*;
 
 	#[test]
-	fn rotate_test() {
-		let mut t = Shape::T.value();
-		for _ in 0..4 {
-			Shape::rotate(&mut t);
-		}
-		assert_eq!(t, Shape::T.value());
-	}
-
-	#[test]
 	fn shape_x_test() {
-		assert_eq!(0, Shape::I.x());
-		assert_eq!(0, Shape::J.x());
-		assert_eq!(0, Shape::L.x());
-		assert_eq!(0, Shape::S.x());
+		assert_eq!(0, Shape::I(0).x());
+		assert_eq!(0, Shape::J(0).x());
+		assert_eq!(0, Shape::L(0).x());
+		assert_eq!(0, Shape::S(0).x());
 	}
 
 	#[test]
 	fn shape_y_test() {
-		assert_eq!(1, Shape::I.y());
-		assert_eq!(0, Shape::J.y());
-		assert_eq!(0, Shape::L.y());
-		assert_eq!(0, Shape::S.y());
+		assert_eq!(1, Shape::I(0).y());
+		assert_eq!(0, Shape::J(0).y());
+		assert_eq!(0, Shape::L(0).y());
+		assert_eq!(0, Shape::S(0).y());
 	}
 
 	#[test]
 	fn shape_w_test() {
-		assert_eq!(4, Shape::I.w());
-		assert_eq!(3, Shape::J.w());
-		assert_eq!(3, Shape::L.w());
-		assert_eq!(3, Shape::S.w());
+		assert_eq!(4, Shape::I(0).w());
+		assert_eq!(3, Shape::J(0).w());
+		assert_eq!(3, Shape::L(0).w());
+		assert_eq!(3, Shape::S(0).w());
 	}
 
 	#[test]
 	fn shape_h_test() {
-		assert_eq!(1, Shape::I.h());
-		assert_eq!(2, Shape::J.h());
-		assert_eq!(2, Shape::L.h());
-		assert_eq!(2, Shape::S.h());
+		assert_eq!(1, Shape::I(0).h());
+		assert_eq!(2, Shape::J(0).h());
+		assert_eq!(2, Shape::L(0).h());
+		assert_eq!(2, Shape::S(0).h());
 	}
 }
