@@ -5,7 +5,6 @@
 [![codecov](https://codecov.io/gh/MrRobb/tetris-rs/branch/master/graph/badge.svg)](https://codecov.io/gh/MrRobb/tetris-rs)
 [![GitHub Issues](https://img.shields.io/github/issues/mrrobb/tetris-rs.svg)](https://github.com/mrrobb/tetris-rs/issues)
 [![Github Stars](https://img.shields.io/github/stars/mrrobb/tetris-rs.svg?logo=github)](https://github.com/mrrobb/tetris-rs/stargazers)
-[![Twitter](https://img.shields.io/twitter/follow/rxbrtx.svg?label=rxbrtx&style=flat&logo=twitter&logoColor=4FADFF)](https://twitter.com/rxbrtx)
 
 > **This is in a VERY early stage.** Come back in a couple of weeks. I am working in a refactoring of [this](https://github.com/MrRobb/Artificial-Intelligence/tree/master/Tetris%20AI) but made in [Rust](https://www.rust-lang.org) which is basically C++ but with steroids.
 
