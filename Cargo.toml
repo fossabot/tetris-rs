@@ -1,5 +1,5 @@
 [package]
-name = "tetris-rs"
+name = "tetris"
 version = "0.1.0"
 authors = ["Mr.Robb <rob.ariosa@hotmail.com>"]
 description = "🕹️ Cross-platform Tetris environment made with Rust."
@@ -13,7 +13,7 @@ leg = "0.1.3"
 
 [package.metadata.bundle]
 name = "Tetris"
-identifier = "com.mrrobb.tetris-rs"
+identifier = "com.mrrobb.tetrisrs"
 icon = [".assets/icon.png"]
 version = "0.1.0"
 resources = [".assets"]

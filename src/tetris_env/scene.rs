@@ -16,10 +16,12 @@ impl Scene<MenuScene> {
 	pub fn new(config: Conf) -> Self {
 
 		let world = World {
-			config
+			config,
+			nrows: 5,
+			ncols: 7
 		};
 
-		Scene {
+		Self {
 			scene: MenuScene::new(world)
 		}
 	}
@@ -30,9 +32,11 @@ impl Scene<MenuScene> {
 
 impl Scene<MenuScene> {
 	pub fn run(self) -> Scene<TetrisScene> {
-		leg::success("Opening menu...", None, None);
+
 		const VERSION: &str = env!("CARGO_PKG_VERSION");
-		leg::head("Tetris", Some("🕹️"), Some(VERSION));
+
+		leg::success("Opening menu...", None, None);
+		leg::head("Tetris", Some("\u{1f579}\u{fe0f}"), Some(VERSION));
 		self.into()
 	}
 }
@@ -57,7 +61,7 @@ impl Scene<GameOverScene> {
 
 impl From<Scene<MenuScene>> for Scene<TetrisScene> {
 	fn from(value: Scene<MenuScene>) -> Scene<TetrisScene> {
-		Scene {
+		Self {
 			scene: value.scene.into()
 		}
 	}
@@ -65,7 +69,7 @@ impl From<Scene<MenuScene>> for Scene<TetrisScene> {
 
 impl From<Scene<TetrisScene>> for Scene<GameOverScene> {
 	fn from(value: Scene<TetrisScene>) -> Scene<GameOverScene> {
-		Scene {
+		Self {
 			scene: value.scene.into()
 		}
 	}

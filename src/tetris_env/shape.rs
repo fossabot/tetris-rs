@@ -53,7 +53,7 @@ impl Shape {
 		}
 	}
 
-	pub fn rotate_clockwise(&self) -> Shape {
+	pub fn rotate_clockwise(&self) -> Self {
 		match *self {
 			Shape::I(i) => Shape::I((i + 1) % 4),
 			Shape::J(i) => Shape::J((i + 1) % 4),
@@ -65,34 +65,34 @@ impl Shape {
 		}
 	}
 
-	pub fn x(&self) -> u8 {
+	pub fn x(&self) -> usize {
 		for (i, col) in self.value().column_iter().enumerate() {
 			for cell in col.iter() {
-				if *cell > 0u8 {
-					return i as u8
+				if *cell > 0_u8 {
+					return i
 				}
 			}
 		}
-		0u8
+		0_usize
 	}
 
-	pub fn y(&self) -> u8 {
+	pub fn y(&self) -> usize {
 		for (i, row) in self.value().row_iter().enumerate() {
 			for cell in row.iter() {
-				if *cell > 0u8 {
-					return i as u8
+				if *cell > 0_u8 {
+					return i
 				}
 			}
 		}
-		0u8
+		0_usize
 	}
 
-	pub fn w(&self) -> u8 {
-		let mut width = self.value().ncols() as u8;
+	pub fn w(&self) -> usize {
+		let mut width = self.value().ncols();
 		for col in self.value().column_iter() {
 			let mut count = 0;
 			for cell in col.iter() {
-				count += if *cell != 0 { 1 } else { 0 };
+				count += if *cell == 0 { 0 } else { 1 };
 			}
 			if count == 0 {
 				width -= 1;
@@ -101,12 +101,12 @@ impl Shape {
 		width
 	}
 
-	pub fn h(&self) -> u8 {
-		let mut height = self.value().ncols() as u8;
+	pub fn h(&self) -> usize {
+		let mut height = self.value().ncols();
 		for row in self.value().row_iter() {
 			let mut count = 0;
 			for cell in row.iter() {
-				count += if *cell != 0 { 1 } else { 0 };
+				count += if *cell == 0 { 0 } else { 1 };
 			}
 			if count == 0 {
 				height -= 1;
@@ -115,7 +115,7 @@ impl Shape {
 		height
 	}
 
-	pub fn from_index(index: u8) -> Option<Shape> {
+	pub fn from_index(index: u8) -> Option<Self> {
 		match index {
 			1 => Some(Shape::I(0)),
 			2 => Some(Shape::J(0)),

@@ -6,8 +6,8 @@ pub struct MenuScene {
 }
 
 impl MenuScene {
-	pub fn new(world: World) -> MenuScene {
-		MenuScene {
+	pub fn new(world: World) -> Self {
+		Self {
 			world
 		}
 	}

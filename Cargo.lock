@@ -1787,7 +1787,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tetris-rs"
+name = "tetris"
 version = "0.1.0"
 dependencies = [
  "ggez 0.5.0-rc.2 (registry+https://github.com/rust-lang/crates.io-index)",
