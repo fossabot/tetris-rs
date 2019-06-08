@@ -65,8 +65,18 @@ impl Game {
 fn main() {
 
 	let args: Vec<String> = std::env::args().collect();
-	let nrows= args[1].parse().unwrap_or(5_usize);
-	let ncols: usize = args[2].parse().unwrap_or(7_usize);
+
+	let nrows: usize;
+	let ncols: usize;
+
+	if args.len() == 3 {
+		nrows = args[1].parse().unwrap_or(5_usize);
+		ncols = args[2].parse().unwrap_or(7_usize);
+	}
+	else {
+		nrows = 5_usize;
+		ncols = 7_usize;
+	}
 
 	let window_mode = WindowMode::default()
 		.dimensions(1600.0, 1200.0)
