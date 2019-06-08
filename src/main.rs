@@ -10,6 +10,7 @@ mod tetris_env;
 use tetris_env::tetris::*;
 use tetris_env::menu::*;
 use tetris_env::scene::*;
+use tetris_env::world::*;
 use tetris_env::gameover::GameOverScene;
 
 enum GameState {
@@ -41,29 +42,9 @@ struct Game {
 }
 
 impl Game {
-	fn new() -> Self {
-
-		let window_mode = WindowMode::default()
-			.dimensions(1600.0, 1200.0)
-			.hidpi(true)
-			.resizable(true);
-
-		let window_setup = WindowSetup::default()
-			.title("Tetris")
-			.icon("")
-			.vsync(true)
-			.transparent(false)
-			.samples(NumSamples::Zero);
-
-		let conf = Conf {
-			window_mode,
-			window_setup,
-			backend: Backend::default(),
-			modules: ModuleConf::default()
-		};
-
+	fn new(world: World) -> Self {
 		Game {
-			state: GameState::Menu(Scene::new(conf))
+			state: GameState::Menu(Scene::new(world))
 		}
 	}
 
@@ -83,6 +64,37 @@ impl Game {
 
 fn main() {
 
-	let game = Game::new();
-	game.run();
+	let args: Vec<String> = std::env::args().collect();
+	let nrows= args[1].parse().unwrap_or(5_usize);
+	let ncols: usize = args[2].parse().unwrap_or(7_usize);
+
+	let window_mode = WindowMode::default()
+		.dimensions(1600.0, 1200.0)
+		.hidpi(true)
+		.resizable(true);
+
+	let window_setup = WindowSetup::default()
+		.title("Tetris")
+		.icon("")
+		.vsync(true)
+		.transparent(false)
+		.samples(NumSamples::Zero);
+
+	let config = Conf {
+		window_mode,
+		window_setup,
+		backend: Backend::default(),
+		modules: ModuleConf::default()
+	};
+
+	let seed: [u8; 16] = rand::random();
+
+	let world = World {
+		nrows,
+		ncols,
+		config,
+		seed
+	};
+
+	Game::new(world).run()
 }

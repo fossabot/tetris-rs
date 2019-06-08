@@ -13,14 +13,7 @@ pub struct Scene<S> {
 }
 
 impl Scene<MenuScene> {
-	pub fn new(config: Conf) -> Self {
-
-		let world = World {
-			config,
-			nrows: 5,
-			ncols: 7
-		};
-
+	pub fn new(world: World) -> Self {
 		Self {
 			scene: MenuScene::new(world)
 		}

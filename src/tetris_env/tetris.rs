@@ -28,17 +28,13 @@ struct TetrisBot {
 
 struct PieceCollector {
 	rng: rngs::SmallRng,
-	seed: u8,
-	counter: u64
 }
 
 impl PieceCollector {
 
-	fn new(seed: u8) -> Self {
+	fn new(seed: [u8; 16]) -> Self {
 		Self {
-			rng: rngs::SmallRng::from_seed([seed; 16]),
-			seed,
-			counter: 0
+			rng: rngs::SmallRng::from_seed(seed),
 		}
 	}
 
@@ -60,7 +56,7 @@ pub struct TetrisGame {
 
 impl TetrisGame {
 
-	pub fn new(view: Rect) -> Self {
+	pub fn new(view: Rect, seed: [u8; 16]) -> Self {
 
 		// Initialize grid
 		let mut grid: MatrixMN<u8, U20, U10> = zero();
@@ -70,7 +66,7 @@ impl TetrisGame {
 		grid.fill_column(9, 8_u8);
 
 		// Set collector with seed
-		let mut collector = PieceCollector::new(0);
+		let mut collector = PieceCollector::new(seed);
 		let current_piece = ([1, 1].into(), collector.get_next());
 
 		// Calculate values
@@ -386,7 +382,7 @@ impl TetrisScene {
 					w: col_offset,
 					h: row_offset
 				};
-				games.push(TetrisGame::new(rect));
+				games.push(TetrisGame::new(rect, world.seed));
 			}
 		}
 
