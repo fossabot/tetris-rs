@@ -1,20 +1,14 @@
 
-extern crate ggez;
 extern crate na;
 extern crate rand;
 extern crate leg;
 
-use ggez::*;
-use ggez::graphics::*;
-use ggez::event::*;
 use na::*;
 use rand::*;
 
 use super::shape::*;
-use super::menu::*;
-use super::world::*;
-use super::bot::*;
 
+#[derive(Clone)]
 struct PieceCollector {
 	rng: rngs::SmallRng,
 }
@@ -33,6 +27,7 @@ impl PieceCollector {
 	}
 }
 
+#[derive(Clone)]
 pub struct TetrisBoard {
 	pub grid: MatrixMN<u8, U20, U10>,
 	collector: PieceCollector,
@@ -43,7 +38,7 @@ pub struct TetrisBoard {
 
 impl TetrisBoard {
 
-	pub fn new(view: Rect, seed: [u8; 16]) -> Self {
+	pub fn new(seed: [u8; 16]) -> Self {
 
 		// Initialize grid
 		let mut grid: MatrixMN<u8, U20, U10> = zero();
@@ -82,7 +77,7 @@ impl TetrisBoard {
 
 			// Generate new piece
 			let new_shape = self.collector.get_next();
-			self.current = ([1, 1].into(), new_shape);
+			self.current = ([4, 1].into(), new_shape);
 		}
 	}
 

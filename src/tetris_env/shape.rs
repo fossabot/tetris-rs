@@ -5,7 +5,7 @@ extern crate na;
 use ggez::graphics::*;
 use na::*;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 pub enum Shape { I(u8), J(u8), L(u8), O(u8), S(u8), T(u8), Z(u8) }
 
 impl Shape {

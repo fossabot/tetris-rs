@@ -1,6 +1,4 @@
 
-use ggez::conf::*;
-
 use super::world::*;
 use super::menu::*;
 use super::tetris::*;

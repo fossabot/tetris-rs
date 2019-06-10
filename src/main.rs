@@ -43,7 +43,7 @@ struct Game {
 
 impl Game {
 	fn new(world: World) -> Self {
-		Game {
+		Self {
 			state: GameState::Menu(Scene::new(world))
 		}
 	}
@@ -66,17 +66,37 @@ fn main() {
 
 	let args: Vec<String> = std::env::args().collect();
 
-	let nrows: usize;
-	let ncols: usize;
 
-	if args.len() == 3 {
-		nrows = args[1].parse().unwrap_or(5_usize);
-		ncols = args[2].parse().unwrap_or(7_usize);
+	// Rows
+
+	let nrows = if args.len() >= 3 {
+		std::cmp::max(1, args[1].parse().unwrap_or(5_usize))
 	}
 	else {
-		nrows = 5_usize;
-		ncols = 7_usize;
+		5_usize
+	};
+
+
+	// Columns
+
+	let ncols = if args.len() >= 3 {
+		std::cmp::max(1, args[2].parse().unwrap_or(7_usize))
 	}
+	else {
+		7_usize
+	};
+
+
+	// Player
+
+	let has_player: bool = if args.len() >= 4 {
+		args[3].parse().unwrap_or(false)
+	} else {
+		false
+	};
+
+
+	// Config
 
 	let window_mode = WindowMode::default()
 		.dimensions(1600.0, 1200.0)
@@ -85,7 +105,6 @@ fn main() {
 
 	let window_setup = WindowSetup::default()
 		.title("Tetris")
-		.icon("")
 		.vsync(true)
 		.transparent(false)
 		.samples(NumSamples::Zero);
@@ -97,13 +116,21 @@ fn main() {
 		modules: ModuleConf::default()
 	};
 
+
+	// Seed
+
 	let seed: [u8; 16] = rand::random();
+
+
+	// World
 
 	let world = World {
 		nrows,
 		ncols,
+		has_player,
 		config,
 		seed
+
 	};
 
 	Game::new(world).run()

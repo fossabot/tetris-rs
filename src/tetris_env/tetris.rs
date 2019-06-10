@@ -8,7 +8,6 @@ use ggez::*;
 use ggez::graphics::*;
 use ggez::event::*;
 use na::*;
-use rand::*;
 
 use super::shape::*;
 use super::menu::*;
@@ -32,7 +31,7 @@ pub struct TetrisGame {
 
 impl TetrisGame {
 
-	pub fn new(view: Rect, seed: [u8; 16]) -> Self {
+	pub fn new(view: Rect, seed: [u8; 16], is_player: bool) -> Self {
 
 		// Calculate values
 		let block_size = view.h / 20.0;
@@ -41,16 +40,44 @@ impl TetrisGame {
 		let w = view.w;
 		let h = view.h;
 
+		// Build bot
+		let bot: Option<TetrisBot>;
+		if is_player {
+			bot = None
+		}
+		else {
+			bot = TetrisBot::new().into()
+		}
+
 		// Build state
 		Self {
 			config: TetrisDisplayConfig { x, y, w, h, block_size },
-			bot: None,
-			board: TetrisBoard::new(view, seed),
+			bot,
+			board: TetrisBoard::new(seed),
 		}
 	}
 
-	pub fn update(&mut self, _ctx: &mut Context) {
-		self.board.down()
+	pub fn update(&mut self) {
+
+		let copy = self.board.clone();
+		let desired_x = match &self.bot {
+			None => self.board.current.0.x + copy.current.1.x() as i32,
+			Some(bot) => bot.ask(&copy.grid, &copy.current) as i32
+		};
+
+		let mut tries = 0;
+
+		while tries <= 8 && self.board.current.0.x + (self.board.current.1.x() as i32) < desired_x {
+			self.board.right();
+			tries += 1;
+		}
+
+		while tries <= 8 && self.board.current.0.x + (self.board.current.1.x() as i32) > desired_x {
+			self.board.left();
+			tries += 1;
+		}
+
+		self.board.down();
 	}
 
 	pub fn draw(&self, ctx: &mut Context) {
@@ -121,12 +148,17 @@ impl TetrisGame {
 	}
 
 	pub fn key_down_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods, _repeat: bool) {
-		match keycode {
-			KeyCode::Left => self.board.left(),
-			KeyCode::Right => self.board.right(),
-			KeyCode::Down => self.board.down(),
-			KeyCode::Up => self.board.rotate(),
-			_ => ()
+		match &self.bot {
+			Some(_) => if let KeyCode::Down = keycode {
+				self.board.down()
+			},
+			None => match keycode {
+				KeyCode::Left => self.board.left(),
+				KeyCode::Right => self.board.right(),
+				KeyCode::Down => self.board.down(),
+				KeyCode::Up => self.board.rotate(),
+				_ => ()
+			}
 		}
 	}
 
@@ -167,7 +199,12 @@ impl TetrisScene {
 					w: col_offset,
 					h: row_offset
 				};
-				games.push(TetrisGame::new(rect, world.seed));
+				if world.has_player && i == 0 && j == 0 {
+					games.push(TetrisGame::new(rect, world.seed, true));
+				}
+				else {
+					games.push(TetrisGame::new(rect, world.seed, false));
+				}
 			}
 		}
 
@@ -194,12 +231,13 @@ impl EventHandler for TetrisScene {
 
 	fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
 
-		const FPS: u32 = 2;
+		const FPS: u32 = 20;
 
 		while timer::check_update_time(ctx, FPS) {
-			for game in self.games.iter_mut() {
-				game.update(ctx);
-			}
+
+			for game in &mut self.games {
+				game.update();
+			};
 		}
 
 		Ok(())
@@ -210,7 +248,7 @@ impl EventHandler for TetrisScene {
 		let background_color = (28.0 / 255.0, 28.0 / 255.0, 30.0 / 255.0, 1.0).into();
 		clear(ctx, background_color);
 
-		for game in self.games.iter_mut() {
+		for game in &mut self.games {
 			game.draw(ctx);
 		}
 
@@ -221,14 +259,14 @@ impl EventHandler for TetrisScene {
 	}
 
 	fn key_down_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods, _repeat: bool) {
-		for game in self.games.iter_mut() {
+		for game in &mut self.games {
 			game.key_down_event(_ctx, keycode, _keymods, _repeat);
 		}
 	}
 }
 
 impl From<MenuScene> for TetrisScene {
-	fn from(value: MenuScene) -> TetrisScene {
-		TetrisScene::new(value.world)
+	fn from(value: MenuScene) -> Self {
+		Self::new(value.world)
 	}
 }
