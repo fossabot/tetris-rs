@@ -20,8 +20,8 @@ impl Window {
 	pub fn run(mut self) {
 		loop {
 			self = match self {
-				Window::Menu(m) => m.run().into(),
-				Window::Game(g) => g.run().into(),
+				Window::Menu(m) => m.run(),
+				Window::Game(g) => g.run(),
 				Window::GameOver(o) => { o.run(); break; },
 			}
 		}

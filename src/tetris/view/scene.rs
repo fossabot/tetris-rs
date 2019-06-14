@@ -42,13 +42,13 @@ impl Scene for GameOver {
 // Transitions
 
 impl From<Menu> for Game {
-	fn from(value: Menu) -> Game {
-		Game::new(value.world)
+	fn from(value: Menu) -> Self {
+		Self::new(value.world)
 	}
 }
 
 impl From<Game> for GameOver {
-	fn from(value: Game) -> GameOver {
-		GameOver::new(value.world)
+	fn from(value: Game) -> Self {
+		Self::new(value.world)
 	}
 }

@@ -2,6 +2,7 @@
 use ggez::graphics::Color;
 use na::DMatrix;
 
+#[derive(PartialEq, Clone, Copy)]
 pub enum Rotation {
 	Rotate0,
 	Rotate90,
@@ -14,8 +15,8 @@ pub enum Shape { I(u8), J(u8), L(u8), O(u8), S(u8), T(u8), Z(u8) }
 
 impl Shape {
 
-	pub fn value(&self) -> DMatrix<u8> {
-		match *self {
+	pub fn value(self) -> DMatrix<u8> {
+		match self {
 			Shape::I(0) => DMatrix::from_row_slice(4, 4, &[ 0,0,0,0, 1,1,1,1, 0,0,0,0, 0,0,0,0 ]),
 			Shape::I(1) => DMatrix::from_row_slice(4, 4, &[ 0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0 ]),
 			Shape::I(2) => DMatrix::from_row_slice(4, 4, &[ 0,0,0,0, 0,0,0,0, 1,1,1,1, 0,0,0,0 ]),
@@ -45,8 +46,8 @@ impl Shape {
 		}
 	}
 
-	pub fn color(&self) -> Color {
-		match *self {
+	pub fn color(self) -> Color {
+		match self {
 			Shape::I(_) => Color::from_rgb(249, 35, 56),
 			Shape::J(_) => Color::from_rgb(201, 115, 255),
 			Shape::L(_) => Color::from_rgb(28, 118, 188),
@@ -57,8 +58,8 @@ impl Shape {
 		}
 	}
 
-	pub fn rotate_clockwise(&self) -> Self {
-		match *self {
+	pub fn rotate_clockwise(self) -> Self {
+		match self {
 			Shape::I(i) => Shape::I((i + 1) % 4),
 			Shape::J(i) => Shape::J((i + 1) % 4),
 			Shape::L(i) => Shape::L((i + 1) % 4),
@@ -69,7 +70,7 @@ impl Shape {
 		}
 	}
 
-	pub fn x(&self) -> usize {
+	pub fn x(self) -> usize {
 		for (i, col) in self.value().column_iter().enumerate() {
 			for cell in col.iter() {
 				if *cell > 0_u8 {
@@ -80,7 +81,7 @@ impl Shape {
 		0_usize
 	}
 
-	pub fn y(&self) -> usize {
+	pub fn y(self) -> usize {
 		for (i, row) in self.value().row_iter().enumerate() {
 			for cell in row.iter() {
 				if *cell > 0_u8 {
@@ -91,7 +92,7 @@ impl Shape {
 		0_usize
 	}
 
-	pub fn w(&self) -> usize {
+	pub fn w(self) -> usize {
 		let mut width = self.value().ncols();
 		for col in self.value().column_iter() {
 			let mut count = 0;
@@ -105,7 +106,7 @@ impl Shape {
 		width
 	}
 
-	pub fn h(&self) -> usize {
+	pub fn h(self) -> usize {
 		let mut height = self.value().ncols();
 		for row in self.value().row_iter() {
 			let mut count = 0;

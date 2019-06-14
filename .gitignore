@@ -1,5 +1,5 @@
 /target
 **/*.rs.bk
 .idea/
-
 tetris-rs\.iml
+tetris-diagram

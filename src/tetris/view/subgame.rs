@@ -26,6 +26,7 @@ pub struct SubGame {
 	bot: Option<Bot>,
 }
 
+#[derive(Clone, Copy)]
 pub enum Player {
 	Human,
 	Bot
@@ -136,6 +137,8 @@ impl SubGame {
 
 	pub fn key_down_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods, _repeat: bool) {
 
+		// TODO: Change order of the match keycode and put first the self.bot.is_none()
+
 		match keycode {
 			KeyCode::Down => {
 				match down(&self.board, &self.board.current) {
@@ -146,25 +149,18 @@ impl SubGame {
 			}
 			KeyCode::Left => {
 				if self.bot.is_none() {
-					match left(&self.board, &self.board.current) {
-						Ok(piece) => self.board.current = piece,
-						_ => ()
-					}
+					if let Ok(piece) = left(&self.board, &self.board.current) { self.board.current = piece }
 				}
 			}
 			KeyCode::Right => {
 				if self.bot.is_none() {
-					match right(&self.board, &self.board.current) {
-						Ok(piece) => self.board.current = piece,
-						_ => ()
-					}
+					if let Ok(piece) = right(&self.board, &self.board.current) { self.board.current = piece }
 				}
 			}
 			KeyCode::Up => {
 				if self.bot.is_none() {
-					match rotate(&self.board, &self.board.current) {
-						Ok(piece) => self.board.current = piece,
-						_ => ()
+					if let Ok(piece) = rotate(&self.board, &self.board.current) {
+						self.board.current = piece
 					}
 				}
 			}

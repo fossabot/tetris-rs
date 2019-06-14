@@ -97,9 +97,9 @@ impl EventHandler for Game {
 		Ok(())
 	}
 
-	fn key_down_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods, _repeat: bool) {
+	fn key_down_event(&mut self, ctx: &mut Context, keycode: KeyCode, keymods: KeyMods, repeat: bool) {
 		for game in &mut self.games {
-			game.key_down_event(_ctx, keycode, _keymods, _repeat);
+			game.key_down_event(ctx, keycode, keymods, repeat);
 		}
 	}
 }

@@ -174,17 +174,15 @@ impl Board {
 		let mut tries = 0;
 
 		while self.current.position.x < x && tries < 5 {
-			match right(&self, &self.current) {
-				Ok(piece) => self.current = piece,
-				_ => ()
-			};
+			if let Ok(piece) = right(&self, &self.current) {
+				self.current = piece
+			}
 			tries += 1;
 		}
 
 		while self.current.position.x > x && tries < 5 {
-			match left(&self, &self.current) {
-				Ok(piece) => self.current = piece,
-				_ => ()
+			if let Ok(piece) = left(&self, &self.current) {
+				self.current = piece
 			}
 			tries += 1;
 		}
@@ -290,7 +288,7 @@ fn can_rotate(board: &Board, piece: &Piece) -> Result<Piece, BoardError> {
 			new_piece = new_piece.x(new_piece.position.x - 2);
 		}
 		else if (new_piece.shape == Shape::I(0) || new_piece.shape == Shape::I(2)) && !overlapping(board, &new_piece, 2, 0) {
-			new_piece = new_piece.x(new_piece.position.x - 2);
+			new_piece = new_piece.x(new_piece.position.x + 2);
 		}
 		else {
 			return Err(BoardError::UnableToRotate)
