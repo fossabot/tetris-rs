@@ -3,69 +3,15 @@ extern crate ggez;
 extern crate na;
 extern crate rand;
 
-use ggez::conf::*;
+mod tetris;
 
-mod tetris_env;
-
-use tetris_env::tetris::*;
-use tetris_env::menu::*;
-use tetris_env::scene::*;
-use tetris_env::world::*;
-use tetris_env::gameover::GameOverScene;
-
-enum GameState {
-	Menu(Scene<MenuScene>),
-	Tetris(Scene<TetrisScene>),
-	GameOver(Scene<GameOverScene>)
-}
-
-impl From<Scene<MenuScene>> for GameState {
-	fn from(value: Scene<MenuScene>) -> Self {
-		GameState::Menu(value)
-	}
-}
-
-impl From<Scene<TetrisScene>> for GameState {
-	fn from(value: Scene<TetrisScene>) -> Self {
-		GameState::Tetris(value)
-	}
-}
-
-impl From<Scene<GameOverScene>> for GameState {
-	fn from(value: Scene<GameOverScene>) -> Self {
-		GameState::GameOver(value)
-	}
-}
-
-struct Game {
-	state: GameState
-}
-
-impl Game {
-	fn new(world: World) -> Self {
-		Self {
-			state: GameState::Menu(Scene::new(world))
-		}
-	}
-
-	fn run(mut self) {
-		loop {
-			self.state = match self.state {
-				GameState::Menu(s) => { s.run().into() },
-				GameState::Tetris(s) => { s.run().into() },
-				GameState::GameOver(s) => {
-					s.run();
-					break;
-				},
-			};
-		}
-	}
-}
+use ggez::conf::{ Conf, NumSamples, WindowMode, WindowSetup, Backend, ModuleConf };
+use tetris::view::window::Window;
+use tetris::model::world::World;
 
 fn main() {
 
 	let args: Vec<String> = std::env::args().collect();
-
 
 	// Rows
 
@@ -73,7 +19,7 @@ fn main() {
 		std::cmp::max(1, args[1].parse().unwrap_or(5_usize))
 	}
 	else {
-		5_usize
+		1_usize
 	};
 
 
@@ -83,7 +29,7 @@ fn main() {
 		std::cmp::max(1, args[2].parse().unwrap_or(7_usize))
 	}
 	else {
-		7_usize
+		1_usize
 	};
 
 
@@ -92,7 +38,7 @@ fn main() {
 	let has_player: bool = if args.len() >= 4 {
 		args[3].parse().unwrap_or(false)
 	} else {
-		false
+		true
 	};
 
 
@@ -133,5 +79,5 @@ fn main() {
 
 	};
 
-	Game::new(world).run()
+	Window::new(world).run()
 }

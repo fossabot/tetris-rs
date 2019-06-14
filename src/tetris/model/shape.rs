@@ -1,11 +1,15 @@
 
-extern crate ggez;
-extern crate na;
+use ggez::graphics::Color;
+use na::DMatrix;
 
-use ggez::graphics::*;
-use na::*;
+pub enum Rotation {
+	Rotate0,
+	Rotate90,
+	Rotate180,
+	Rotate270
+}
 
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, Copy)]
 pub enum Shape { I(u8), J(u8), L(u8), O(u8), S(u8), T(u8), Z(u8) }
 
 impl Shape {
@@ -36,7 +40,7 @@ impl Shape {
 			Shape::Z(0) => DMatrix::from_row_slice(3, 3, &[ 7,7,0,   0,7,7,   0,0,0            ]),
 			Shape::Z(1) => DMatrix::from_row_slice(3, 3, &[ 0,0,7,   0,7,7,   0,7,0            ]),
 			Shape::Z(2) => DMatrix::from_row_slice(3, 3, &[ 0,0,0,   7,7,0,   0,7,7            ]),
-			Shape::Z(3) => DMatrix::from_row_slice(3, 3, &[ 0,7,0,   7,7,0,   7,0,0            ]),
+			Shape::Z(3) => DMatrix::from_row_slice(3, 3, &[ 0,7,0,   7,7,0,   7,0,0			   ]),
 			_ => unreachable!()
 		}
 	}

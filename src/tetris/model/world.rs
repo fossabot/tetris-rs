@@ -1,6 +1,7 @@
 
 use ggez::conf::Conf;
 
+#[derive(Clone)]
 pub struct World {
 	pub nrows: usize,
 	pub ncols: usize,

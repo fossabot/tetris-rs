@@ -1,11 +1,11 @@
 
-use super::world::*;
+use super::super::model::world::World;
 
-pub struct MenuScene {
+pub struct Menu {
 	pub world: World
 }
 
-impl MenuScene {
+impl Menu {
 	pub fn new(world: World) -> Self {
 		Self {
 			world
