@@ -1,6 +1,6 @@
 [package]
 name = "tetris"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Mr.Robb <rob.ariosa@hotmail.com>"]
 description = "🕹️ Cross-platform Tetris environment made with Rust."
 edition = "2018"
