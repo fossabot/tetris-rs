@@ -5,6 +5,7 @@
 [![codecov](https://codecov.io/gh/MrRobb/tetris-rs/branch/master/graph/badge.svg)](https://codecov.io/gh/MrRobb/tetris-rs)
 [![GitHub Issues](https://img.shields.io/github/issues/mrrobb/tetris-rs.svg)](https://github.com/mrrobb/tetris-rs/issues)
 [![Github Stars](https://img.shields.io/github/stars/mrrobb/tetris-rs.svg?logo=github)](https://github.com/mrrobb/tetris-rs/stargazers)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMrRobb%2Ftetris-rs.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FMrRobb%2Ftetris-rs?ref=badge_shield)
 
 > I am working in a refactoring of [this](https://github.com/MrRobb/Artificial-Intelligence/tree/master/Tetris%20AI) but made in [Rust](https://www.rust-lang.org) which is basically C++ but with steroids.
 
@@ -49,3 +50,7 @@ _You definitely do not want to this._
 cargo run               # debug
 cargo run --release     # release
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMrRobb%2Ftetris-rs.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FMrRobb%2Ftetris-rs?ref=badge_large)
